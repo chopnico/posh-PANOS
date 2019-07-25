@@ -12,29 +12,60 @@ function New-PanosSession {
 
         [Parameter(
              Position = 1,
-             Mandatory = $true,
+             Mandatory = $false,
              ValueFromPipeLine = $false,
              ValueFromPipeLineByPropertyName = $false)]
-        [PSCredential]$Credential,
+        [Int]$Port=443,
 
         [Parameter(
              Position = 2,
              Mandatory = $false,
              ValueFromPipeLine = $false,
              ValueFromPipeLineByPropertyName = $false)]
-        [PSCredential]$SkipCertificateCheck,
+        [String]$VirtualSystem="vsys1",
+
+        [Parameter(
+             Position = 3,
+             Mandatory = $true,
+             ValueFromPipeLine = $false,
+             ValueFromPipeLineByPropertyName = $false)]
+        [PSCredential]$Credential,
+
+        [Parameter(
+             Position = 4,
+             Mandatory = $false,
+             ValueFromPipeLine = $false,
+             ValueFromPipeLineByPropertyName = $false)]
+        [Switch]$SkipCertificateCheck
     )
 
     Try{
         $username = $Credential.GetNetworkCredential().username
         $password = $Credential.GetNetworkCredential().password
 
-        $response = Invoke-RestMethod `
-          -Uri "https://$($FirewallName)/api/?type=keygen&user=$($username)&password=$($password)" `
-          -Method Get `
-          -ContentType "application/json"
+        $params = @{
+            Uri = "https://$($FirewallName):$($Port)/api/?type=keygen&user=$($username)&password=$($password)"
+            Method = "Get"
+            SkipCertificateCheck = $SkipCertificateCheck
+        }
 
-        Write-Output $response
+        $response = $(Invoke-RestMethod @params).response
+
+        $response | ForEach-Object {
+            if($response.status = "success"){
+                $session = [Session]@{
+                    FirewallName = $FirewallName
+                    Port = $Port
+                    VirtualSystem = $VirtualSystem
+                    ApiKey = $_.result.key
+                }
+
+                Write-Output $session
+            }
+            else{
+                throw $response
+            }
+        }
     }
     Catch{
         Write-Error $_.Exception

@@ -30,7 +30,7 @@ CompanyName = 'IGS'
 Copyright = '(c) IGS. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'A module for interacting with Palo Alto\'s PANOS'
+Description = 'A module for interacting with PANOS from Palo Alto'
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -73,7 +73,7 @@ NestedModules = @(
 )
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = "*"
+FunctionsToExport = "*-*"
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = "*"
