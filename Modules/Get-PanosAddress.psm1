@@ -50,7 +50,7 @@ function Get-PanosAddress {
         $uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($action)"
 
         $params = @{
-            Uri = $uri.AbsoulteUri
+            Uri = $uri.AbsoluteUri
             Method = "Get"
             SkipCertificateCheck = $SkipCertificateCheck
         }
