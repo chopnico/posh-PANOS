@@ -44,7 +44,7 @@ function New-PanosSession {
         $password = $Credential.GetNetworkCredential().password
 
         $params = @{
-            Uri = "https://$($FirewallName):$($Port)/api/?type=keygen&user=$($username)&password=$($password)"
+            Uri = [Uri]"https://$($FirewallName):$($Port)/api/?type=keygen&user=$($username)&password=$($password)"
             Method = "Get"
             SkipCertificateCheck = $SkipCertificateCheck
         }

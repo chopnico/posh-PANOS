@@ -90,7 +90,7 @@ function Get-PanosAddressGroup {
         $action = "?type=config&action=show&key=$($Session.ApiKey)&xpath=$($xpath)"
 
         $params = @{
-            Uri = "https://$($Session.FirewallName):$($Session.Port)/api/$($action)"
+            Uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($action)"
             Method = "Get"
             SkipCertificateCheck = $SkipCertificateCheck
         }
