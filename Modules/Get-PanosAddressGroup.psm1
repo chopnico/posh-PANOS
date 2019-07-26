@@ -78,7 +78,7 @@ function Get-PanosAddressGroup {
                 }
                 Get-PanosAddress @params
             }
-            Write-Output $addressGroup
+            return $addressGroup
         }
     }
 
@@ -89,8 +89,10 @@ function Get-PanosAddressGroup {
 
         $action = "?type=config&action=show&key=$($Session.ApiKey)&xpath=$($xpath)"
 
+        $uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($action)"
+
         $params = @{
-            Uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($action)"
+            Uri = $uri.AbsoluteUri
             Method = "Get"
             SkipCertificateCheck = $SkipCertificateCheck
         }
@@ -100,11 +102,11 @@ function Get-PanosAddressGroup {
         $response | ForEach-Object {
             if($response.status = "success"){
                 if($response.result.entry){
-                    Initialize -Entry $response.result.entry
+                    Write-Output $(Initialize -Entry $response.result.entry)
                 }
                 elseif($response.result."address-group".entry){
                     $response.result."address-group".entry | ForEach-Object {
-                        Initialize -Entry $_
+                        Write-Output $(Initialize -Entry $_)
                     }
                 }
             }

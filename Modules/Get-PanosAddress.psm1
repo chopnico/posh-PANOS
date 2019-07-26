@@ -38,7 +38,7 @@ function Get-PanosAddress {
         elseif($Entry."ip-range") { $address.IPAddress = $Entry."ip-range" }
         elseif($Entry."fqdn") { $address.IPAddress = $Entry."fqdn" }
 
-        Write-Output $address
+        return $address
     }
 
     Try{
@@ -47,8 +47,10 @@ function Get-PanosAddress {
 
         $action = "?type=config&action=show&key=$($Session.ApiKey)&xpath=$($xpath)"
 
+        $uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($action)"
+
         $params = @{
-            Uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($action)"
+            Uri = $uri.AbsoulteUri
             Method = "Get"
             SkipCertificateCheck = $SkipCertificateCheck
         }
@@ -58,11 +60,11 @@ function Get-PanosAddress {
         $response | ForEach-Object {
             if($response.status = "success"){
                 if($response.result.entry){
-                    Initialize -Entry $response.result.entry
+                    Write-Output $(Initialize -Entry $response.result.entry)
                 }
                 else{
                     $response.result.address.entry | ForEach-Object {
-                        Initialize -Entry $_
+                        Write-Output $(Initialize -Entry $_)
                     }
                 }
             }

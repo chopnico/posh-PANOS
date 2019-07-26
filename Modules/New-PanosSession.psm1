@@ -40,11 +40,13 @@ function New-PanosSession {
     )
 
     Try{
-        $username = $Credential.GetNetworkCredential().username
-        $password = $Credential.GetNetworkCredential().password
+        $username = [System.Web.HttpUtility]::UrlEncode($Credential.GetNetworkCredential().username)
+        $password = [System.Web.HttpUtility]::UrlEncode($Credential.GetNetworkCredential().password)
+
+        $uri = [Uri]"https://$($FirewallName):$($Port)/api/?type=keygen&user=$($username)&password=$($password)"
 
         $params = @{
-            Uri = [Uri]"https://$($FirewallName):$($Port)/api/?type=keygen&user=$($username)&password=$($password)"
+            Uri = $uri.AbsoluteUri
             Method = "Get"
             SkipCertificateCheck = $SkipCertificateCheck
         }
