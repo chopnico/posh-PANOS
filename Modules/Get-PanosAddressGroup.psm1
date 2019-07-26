@@ -85,11 +85,14 @@ function Get-PanosAddressGroup {
     Try{
         $xpath = "/config/devices/entry/vsys/entry[@name='$($Session.VirtualSystem)']/address-group"
 
-        if($Name){ $xpath = "$($xpath)/entry[@name='$($Name)']" }
+        if($Name){
+            $encodedName = [System.Web.HttpUtility]::UrlEncode($Name)
+            $xpath = "$($xpath)/entry[@name='$($encodedName)']"
+        }
 
-        $action = "?type=config&action=show&key=$($Session.ApiKey)&xpath=$($xpath)"
+        $path = "?type=config&action=show&key=$($Session.ApiKey)&xpath=$($xpath)"
 
-        $uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($action)"
+        $uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($path)"
 
         $params = @{
             Uri = $uri.AbsoluteUri

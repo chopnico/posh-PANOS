@@ -43,11 +43,15 @@ function Get-PanosAddress {
 
     Try{
         $xpath = "/config/devices/entry/vsys/entry[@name='$($Session.VirtualSystem)']/address"
-        if($Name){ $xpath = "$($xpath)/entry[@name='$($Name)']"}
 
-        $action = "?type=config&action=show&key=$($Session.ApiKey)&xpath=$($xpath)"
+        if($Name){
+            $encodedName = [System.Web.HttpUtility]::UrlEncode($Name)
+            $xpath = "$($xpath)/entry[@name='$($encodedName)']"
+        }
 
-        $uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($action)"
+        $path = "?type=config&action=show&key=$($Session.ApiKey)&xpath=$($xpath)"
+
+        $uri = [Uri]"https://$($Session.FirewallName):$($Session.Port)/api/$($path)"
 
         $params = @{
             Uri = $uri.AbsoluteUri
