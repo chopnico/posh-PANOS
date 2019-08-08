@@ -70,6 +70,7 @@ NestedModules = @(
     './Modules/New-PanosSession.psm1',
     './Modules/Get-PanosAddress.psm1',
     './Modules/Get-PanosAddressGroup.psm1',
+    './Modules/Get-PanosDynamicAddressGroup.psm1',
     './Modules/Get-PanosTag.psm1'
 )
 

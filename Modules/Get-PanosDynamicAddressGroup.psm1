@@ -6,7 +6,7 @@ Gets a list of address groups from a Palo Alto firewall.
 Gets a list of address groups from a Palo Alto firewall.
 You can filter your results by name
 #>
-function Get-PanosAddressGroup {
+function Get-PanosDynamicAddressGroup {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     param (
         [Parameter(Position = 0, Mandatory = $true, ParameterSetName = 'Default')]
@@ -32,8 +32,8 @@ function Get-PanosAddressGroup {
             Tags = $($Entry.tag.member)
         }
 
-        if($Entry."static") {
-            $addressGroup.Members = $Entry."static".member | ForEach-Object {
+        if($Entry."dynamic") {
+            $addressGroup.Members = $Entry."dynamic".member | ForEach-Object {
                 $params = @{
                     Session = $Session
                     SkipCertificateCheck = $SkipCertificateCheck
