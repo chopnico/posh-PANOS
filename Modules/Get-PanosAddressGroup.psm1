@@ -81,6 +81,9 @@ function Get-PanosAddressGroup {
                         Write-Output $(Initialize -Entry $_)
                     }
                 }
+                else{
+                    return $null
+                }
             }
             else{
                 throw $response
