@@ -37,7 +37,21 @@ function Get-PanosSecurityRule{
                         SkipCertificateCheck = $SkipCertificateCheck
                         Name = $_
                     }
-                    Get-PanosAddress @params
+                    $address = Get-PanosAddress @params
+
+                    if(-not $address){
+                        $addressGroup = Get-PanosAddressGroup @params
+                        if(-not $addressGroup){
+                            return [Address]@{
+                                Name = $Name
+                                Address = $Name
+                            }
+                        } else{
+                            return $addressGroup
+                        }
+                    } else{
+                        return $address
+                    }
                 }
             } else{
                 return [Address]@{

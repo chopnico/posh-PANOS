@@ -1,9 +1,9 @@
 class SecurityRule {
     [String]$Name
-    [Address[]]$To
-    [Address[]]$From
-    [Address[]]$Source
-    [Address[]]$Destination
+    [Object[]]$To
+    [Object[]]$From
+    [Object[]]$Source
+    [Object[]]$Destination
     [String[]]$SourceUser
     [String[]]$Category
     [String[]]$Application
