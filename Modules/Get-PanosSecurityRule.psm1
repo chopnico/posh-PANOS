@@ -27,7 +27,44 @@ function Get-PanosSecurityRule{
     function Initialize {
         param($Entry)
 
-        Write-Output $Entry
+        function GetPanosAddress{
+            param($Name)
+
+            if($Name -eq 'any'){
+                return [AnyAddress]::new()
+            }else {
+                if([System.Net.IPAddress]::TryParse($Name, [ref]$null)){
+                    $params = @{
+                        Session = $Session
+                        SkipCertificateCheck = $SkipCertificateCheck
+                        Name = $Name
+                    }
+
+                    $address = Get-PanosAddress @params
+
+                }else {
+                    return $null
+                }
+            }
+        }
+
+        $securityRule = [SecurityRule]@{
+            Name = $Entry.name
+            To = $Entry.to.member
+            From = $Entry.from.member
+            SourceUser = $Entry.'source-user'.member
+            Category = $Entry.category.member
+            Application = $Entry.application.member
+            Service = $Entry.service.member
+            HipProfiles = $Entry.'hip-profiles'.member
+            Action = $Entry.action
+            Description = $Entry.description
+        }
+
+        $securityRule.Source = $Entry.source.member | Foreach-Object { GetPanosAddress -Name $_ }
+        $securityRule.Destination = $Entry.destination.member | Foreach-Object { GetPanosAddress -Name $_ }
+
+        return $securityRule
     }
 
     Try{
