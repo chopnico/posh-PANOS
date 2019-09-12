@@ -30,13 +30,15 @@ function Get-PanosSecurityRule{
         function GetPanosAddress{
             param($Name)
 
-            if(-not [ipaddress]::TryParse($Name, [ref]$null)){
-                $params = @{
-                    Session = $Session
-                    SkipCertificateCheck = $SkipCertificateCheck
-                    Name = $Name
+            if(-not [System.Net.IPAddress]::TryParse($Name, [ref]$null)){
+                $Name | ForEach-Object {
+                    $params = @{
+                        Session = $Session
+                        SkipCertificateCheck = $SkipCertificateCheck
+                        Name = $_
+                    }
+                    Get-PanosAddress @params
                 }
-                Get-PanosAddress @params 
             } else{
                 return [Address]@{
                     Name = $Name
