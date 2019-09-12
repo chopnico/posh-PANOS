@@ -76,9 +76,8 @@ function Get-PanosAddress {
                     $response.result.address.entry | ForEach-Object {
                         Write-Output $(Initialize -Entry $_)
                     }
-                }else {
-                        return $null
-                    }
+                }else{
+                    return $null
                 }
             }
             else{
