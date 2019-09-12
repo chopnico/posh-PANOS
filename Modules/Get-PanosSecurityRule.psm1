@@ -27,59 +27,7 @@ function Get-PanosSecurityRule{
     function Initialize {
         param($Entry)
 
-        function GetPanosAddress{
-            param($Name)
-
-            if(-not [System.Net.IPAddress]::TryParse($Name, [ref]$null)){
-                $params = @{
-                    Session = $Session
-                    SkipCertificateCheck = $SkipCertificateCheck
-                    Name = $Name
-                }
-                $address = Get-PanosAddress @params
-
-                if(-not $address){
-                    $addressGroup = Get-PanosAddressGroup @params
-
-                    if(-not $addressGroup){
-                        return [Address]@{
-                            Name = $Name
-                            Address = $Name
-                        }
-                    } else{
-                        return $addressGroup
-                    }
-                } else{
-                    return $address
-                }
-
-            } else{
-                return [Address]@{
-                    Name = $Name
-                    Address = $Name
-                }
-            }
-        }
-
-        $securityRule = [SecurityRule]@{
-            Name = $Entry.name
-            To = $Entry.to.member
-            From = $Entry.from.member
-            SourceUser = $Entry.'source-user'.member
-            Category = $Entry.category.member
-            Application = $Entry.application.member
-            Service = $Entry.service.member
-            HipProfiles = $Entry.'hip-profiles'.member
-            Action = $Entry.action
-            Description = $Entry.description
-        }
-
-        #$securityRule.To = $Entry.to.member | Foreach-Object { GetPanosAddress -Name $_ }
-        #$securityRule.From = $Entry.from.member | Foreach-Object { GetPanosAddress -Name $_ }
-        $securityRule.Source = $Entry.source.member | Foreach-Object { GetPanosAddress -Name $_ }
-        $securityRule.Destination = $Entry.destination.member | Foreach-Object { GetPanosAddress -Name $_ }
-
-        return $securityRule
+        Write-Output $Entry
     }
 
     Try{
