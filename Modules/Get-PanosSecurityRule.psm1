@@ -31,28 +31,28 @@ function Get-PanosSecurityRule{
             param($Name)
 
             if(-not [System.Net.IPAddress]::TryParse($Name, [ref]$null)){
-                $Name | ForEach-Object {
-                    $params = @{
-                        Session = $Session
-                        SkipCertificateCheck = $SkipCertificateCheck
-                        Name = $_
-                    }
-                    $address = Get-PanosAddress @params
+                $params = @{
+                    Session = $Session
+                    SkipCertificateCheck = $SkipCertificateCheck
+                    Name = $Name
+                }
+                $address = Get-PanosAddress @params
 
-                    if(-not $address){
-                        $addressGroup = Get-PanosAddressGroup @params
-                        if(-not $addressGroup){
-                            return [Address]@{
-                                Name = $Name
-                                Address = $Name
-                            }
-                        } else{
-                            return $addressGroup
+                if(-not $address){
+                    $addressGroup = Get-PanosAddressGroup @params
+
+                    if(-not $addressGroup){
+                        return [Address]@{
+                            Name = $Name
+                            Address = $Name
                         }
                     } else{
-                        return $address
+                        return $addressGroup
                     }
+                } else{
+                    return $address
                 }
+
             } else{
                 return [Address]@{
                     Name = $Name
