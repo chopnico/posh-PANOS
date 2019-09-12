@@ -38,7 +38,10 @@ function Get-PanosSecurityRule{
                 }
                 Get-PanosAddress @params 
             } else{
-                return $Name
+                return [Address]@{
+                    Name = $Name
+                    Address = $Name
+                }
             }
         }
 
