@@ -26,13 +26,12 @@ function Get-PanosAddressGroup {
             [System.Xml.XmlElement]$Entry
         )
 
-        $addressGroup = [AddressGroup]@{
-            Name = $Entry.name
-            Description = $Entry.description
-            Tags = $($Entry.tag.member)
-        }
-
         if($Entry."static") {
+            $addressGroup = [StaticAddressGroup]@{
+                Name = $Entry.name
+                Description = $Entry.description
+                Tags = $($Entry.tag.member)
+            }
             $addressGroup.Members = $Entry."static".member | ForEach-Object {
                 $params = @{
                     Session = $Session
@@ -42,6 +41,13 @@ function Get-PanosAddressGroup {
                 Get-PanosAddress @params
             }
             return $addressGroup
+        }
+        elseif($Entry."dynamic"){
+            $addressGroup = [DynamicAddressGroup]@{
+                Name = $Entry.name
+                Description = $Entry.description
+                Tags = $($Entry.tag.member)
+            }
         }
     }
 

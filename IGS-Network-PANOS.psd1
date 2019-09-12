@@ -70,8 +70,8 @@ NestedModules = @(
     './Modules/New-PanosSession.psm1',
     './Modules/Get-PanosAddress.psm1',
     './Modules/Get-PanosAddressGroup.psm1',
-    './Modules/Get-PanosDynamicAddressGroup.psm1',
     './Modules/Get-PanosTag.psm1'
+    './Modules/Get-PanosSecurityRule.psm1'
 )
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.

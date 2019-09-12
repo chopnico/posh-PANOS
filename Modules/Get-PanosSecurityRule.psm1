@@ -1,7 +1,6 @@
 <#
 #>
-function Get-PanosAddress {
-    [CmdletBinding()]
+function Get-PanosSecurityRule{
     param (
         [Parameter(
              Position = 0,
@@ -28,32 +27,30 @@ function Get-PanosAddress {
     function Initialize {
         param($Entry)
 
-        $address = [Address]@{
+        $securityRule = [SecurityRule]@{
             Name = $Entry.name
+            To = $Entry.to.member
+            From = $Entry.from.member
+            Source = $Entry.source.member
+            Destination = $Entry.destination.member
+            SourceUser = $Entry.'source-user'.member
+            Category = $Entry.category.member
+            Application = $Entry.application.member
+            Service = $Entry.service.member
+            HipProfiles = $Entry.'hip-profiles'.member
+            Action = $Entry.action
             Description = $Entry.description
-            Tags = $($Entry.tag.member)
         }
 
-        if($Entry."ip-netmask") {
-            $address.Address = $Entry."ip-netmask"
-            $address.Type = "ip-netmask"
-        } elseif($Entry."ip-range") {
-            $address.Address = $Entry."ip-range"
-            $address.Type = "ip-range"
-        } elseif($Entry."fqdn") {
-            $address.Address = $Entry."fqdn"
-            $address.Type = "fqdn"
-        }
-
-        return $address
+        return $securityRule
     }
 
     Try{
-        $xpath = "/config/devices/entry/vsys/entry[@name='$($Session.VirtualSystem)']/address"
+        $xpath = "/config/devices/entry/vsys/entry[@name='$($Session.VirtualSystem)']/rulebase/security"
 
         if($Name){
             $encodedName = [System.Web.HttpUtility]::UrlEncode($Name)
-            $xpath = "$($xpath)/entry[@name='$($encodedName)']"
+            $xpath = "$($xpath)/rules/entry[@name='$($encodedName)']"
         }
 
         $path = "?type=config&action=show&key=$($Session.ApiKey)&xpath=$($xpath)"
@@ -74,7 +71,7 @@ function Get-PanosAddress {
                     Write-Output $(Initialize -Entry $response.result.entry)
                 }
                 else{
-                    $response.result.address.entry | ForEach-Object {
+                    $response.result.security.rules.entry | ForEach-Object {
                         Write-Output $(Initialize -Entry $_)
                     }
                 }

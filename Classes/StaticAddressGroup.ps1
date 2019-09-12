@@ -1,7 +1,6 @@
-class Address {
+class StaticAddressGroup {
     [String]$Name
-    [String]$Address
+    [Address[]]$Members
     [String]$Description
-    [String]$Type
     [Array]$Tags
 }

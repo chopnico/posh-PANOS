@@ -1,7 +1,15 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+class Panos < Vagrant.plugin("2")
+  name "Panos"
+  def detect?(machine)
+    machine.communicate.test("show version")
+  end
+end
+
 Vagrant.configure("2") do |config|
+  Panos
   config.vm.box = "igs/panos"
   config.ssh.insert_key = false
   config.vm.boot_timeout = 60
