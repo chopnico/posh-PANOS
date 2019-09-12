@@ -30,12 +30,16 @@ function Get-PanosSecurityRule{
         function GetPanosAddress{
             param($Name)
 
-            $params = @{
-                Session = $Session
-                SkipCertificateCheck = $SkipCertificateCheck
-                Name = $Name
+            if(-not [ipaddress]::TryParse($Name, [ref]$null)){
+                $params = @{
+                    Session = $Session
+                    SkipCertificateCheck = $SkipCertificateCheck
+                    Name = $Name
+                }
+                Get-PanosAddress @params 
+            } else{
+                return $Name
             }
-            Get-PanosAddress @params 
         }
 
         $securityRule = [SecurityRule]@{
