@@ -27,12 +27,19 @@ function Get-PanosSecurityRule{
     function Initialize {
         param($Entry)
 
+        function GetPanosAddress{
+            param($Name)
+
+            $params = @{
+                Session = $Session
+                SkipCertificateCheck = $SkipCertificateCheck
+                Name = $Name
+            }
+            Get-PanosAddress @params 
+        }
+
         $securityRule = [SecurityRule]@{
             Name = $Entry.name
-            To = $Entry.to.member
-            From = $Entry.from.member
-            Source = $Entry.source.member
-            Destination = $Entry.destination.member
             SourceUser = $Entry.'source-user'.member
             Category = $Entry.category.member
             Application = $Entry.application.member
@@ -41,6 +48,11 @@ function Get-PanosSecurityRule{
             Action = $Entry.action
             Description = $Entry.description
         }
+
+        $securityRule.To = $Entry.to.member | Foreach-Object { GetPanosAddress -Name $_ }
+        $securityRule.From = $Entry.from.member | Foreach-Object { GetPanosAddress -Name $_ }
+        $securityRule.Source = $Entry.source.member | Foreach-Object { GetPanosAddress -Name $_ }
+        $securityRule.Destination = $Entry.destination.member | Foreach-Object { GetPanosAddress -Name $_ }
 
         return $securityRule
     }
