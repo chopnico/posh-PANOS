@@ -76,8 +76,8 @@ function Get-PanosSecurityRule{
 
         #$securityRule.To = $Entry.to.member | Foreach-Object { GetPanosAddress -Name $_ }
         #$securityRule.From = $Entry.from.member | Foreach-Object { GetPanosAddress -Name $_ }
-        $securityRule.Source = $Entry.source.member | Foreach-Object { GetPanosAddress -Name $Name }
-        $securityRule.Destination = $Entry.destination.member | Foreach-Object { GetPanosAddress -Name $Name }
+        $securityRule.Source = $Entry.source.member | Foreach-Object { GetPanosAddress -Name $_ }
+        $securityRule.Destination = $Entry.destination.member | Foreach-Object { GetPanosAddress -Name $_ }
 
         return $securityRule
     }
