@@ -33,7 +33,7 @@ function Get-PanosSecurityRule{
             if($Name -eq 'any'){
                 return [AnyAddress]::new()
             }else {
-                if([System.Net.IPAddress]::TryParse($Name, [ref]$null)){
+                if(-not [System.Net.IPAddress]::TryParse($Name, [ref]$null)){
                     $params = @{
                         Session = $Session
                         SkipCertificateCheck = $SkipCertificateCheck
@@ -42,6 +42,12 @@ function Get-PanosSecurityRule{
 
                     $address = Get-PanosAddress @params
 
+                    if(-not $address){
+                        $addressGroup = Get-PanosAddressGroup @params
+
+                        if(-not $addressGroup){
+                        }
+                    }
                 }else {
                     return $null
                 }
