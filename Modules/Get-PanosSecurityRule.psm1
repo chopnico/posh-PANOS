@@ -27,12 +27,13 @@ function Get-PanosSecurityRule{
     function Initialize {
         param($Entry)
 
-        function GetPanosAddress{
+        function GetPanosObject{
             param($Name)
 
             if($Name -eq 'any'){
                 return [AnyAddress]::new()
-            }else {
+            }
+            else{
                 if(-not [System.Net.IPAddress]::TryParse($Name, [ref]$null)){
                     $params = @{
                         Session = $Session
@@ -46,10 +47,25 @@ function Get-PanosSecurityRule{
                         $addressGroup = Get-PanosAddressGroup @params
 
                         if(-not $addressGroup){
+                            $externalList = Get-PanosExternalList @params
+
+                            if(-not $externalList){
+                                return $Name
+                            }
+                            else{
+                                return $externalList
+                            }
+                        }
+                        else{
+                            return $addressGroup
                         }
                     }
-                }else {
-                    return $null
+                    else{
+                        return $address
+                    }
+                }
+                else{
+                    return $Name
                 }
             }
         }
@@ -67,8 +83,8 @@ function Get-PanosSecurityRule{
             Description = $Entry.description
         }
 
-        $securityRule.Source = $Entry.source.member | Foreach-Object { GetPanosAddress -Name $_ }
-        $securityRule.Destination = $Entry.destination.member | Foreach-Object { GetPanosAddress -Name $_ }
+        $securityRule.Source = $Entry.source.member | Foreach-Object { GetPanosObject -Name $_ }
+        $securityRule.Destination = $Entry.destination.member | Foreach-Object { GetPanosObject -Name $_ }
 
         return $securityRule
     }
