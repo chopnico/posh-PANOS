@@ -1,7 +1,6 @@
 class ExternalList {
     [String]$Name
-    [String]$Address
+    [String]$Url
     [String]$Description
     [String]$Type
-    [Array]$Tags
 }
