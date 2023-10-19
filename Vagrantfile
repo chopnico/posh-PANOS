@@ -10,7 +10,7 @@ end
 
 Vagrant.configure("2") do |config|
   Panos
-  config.vm.box = "igs/panos"
+  config.vm.box = "audiacloud/panos"
   config.ssh.insert_key = false
   config.vm.boot_timeout = 60
   config.vm.graceful_halt_timeout = 60
